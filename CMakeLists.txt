@@ -11,6 +11,8 @@ qt_add_executable(Minesweeper
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    Cell.h
+    minesweeperboard.h minesweeperboard.cpp
 )
 
 target_link_libraries(Minesweeper
