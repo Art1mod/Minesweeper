@@ -1,4 +1,9 @@
-#ifndef CELL_H
-#define CELL_H
+// Cell.h
+#pragma once
 
-#endif // CELL_H
+struct Cell {
+    bool isMine = false;
+    bool isRevealed = false;
+    bool isFlagged = false;
+    int neighborMines = 0; // Number of mines surrounding this cell (0 to 8)
+};
