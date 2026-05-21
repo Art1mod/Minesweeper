@@ -1,8 +1,9 @@
 #include "minesweeperbutton.h"
+#include "Config.h"
 
 MinesweeperButton::MinesweeperButton(int r, int c, QWidget *parent)
     : QPushButton(parent), row(r), col(c) {
-    setFixedSize(35, 35);
+    setFixedSize(Config::TILE_SIZE, Config::TILE_SIZE);
 }
 
 void MinesweeperButton::mousePressEvent(QMouseEvent *e) {
