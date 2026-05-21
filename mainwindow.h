@@ -1,6 +1,11 @@
+// mainwindow.h
 #pragma once
 #include <QMainWindow>
 #include <QGridLayout>
+#include <QStackedWidget>
+#include <QScrollArea>
+#include <QVBoxLayout>
+#include <QPushButton>
 #include <vector>
 #include "minesweeperboard.h"
 #include "minesweeperbutton.h"
@@ -19,16 +24,26 @@ public:
 private slots:
     void handleLeftClick(int r, int c);
     void handleRightClick(int r, int c);
+    void startNewGame(int rows, int cols, int mines);
+    void returnToMenu();
 
 private:
     Ui::MainWindow *ui;
     MinesweeperBoard *board;
     bool firstClick;
 
-    // A 2D tracking matrix of visual UI buttons
-    std::vector<std::vector<MinesweeperButton*>> buttons;
+    QStackedWidget *stackedWidget;
+    QWidget *menuWidget;
+
+    // Gameplay layout adjustments
+    QWidget *gameWidget;
+    QScrollArea *scrollArea;
+    QWidget *scrollContainer;
     QGridLayout *gridLayout;
 
+    std::vector<std::vector<MinesweeperButton*>> buttons;
+
+    void createMainMenu();
     void updateUI();
     void revealAllMines();
 };
