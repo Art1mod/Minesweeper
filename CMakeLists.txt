@@ -15,6 +15,7 @@ qt_add_executable(Minesweeper
     minesweeperboard.h minesweeperboard.cpp
     minesweeperbutton.h minesweeperbutton.cpp
     Config.h
+
 )
 
 target_link_libraries(Minesweeper
@@ -35,3 +36,8 @@ qt_generate_deploy_app_script(
     NO_UNSUPPORTED_PLATFORM_ERROR
 )
 install(SCRIPT ${deploy_script})
+
+# Wrap the resource file compilation in quotes to handle directory spaces smoothly
+if(WIN32)
+    set(CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> <DEFINES> <INCLUDES> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>")
+endif()

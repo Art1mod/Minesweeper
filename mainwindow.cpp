@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), board(nullptr), firstClick(true) {
     ui->setupUi(this);
 
+    this->setWindowTitle("Minesweeper");
+
     // Apply absolute fixed dimensions directly from Config
     this->setFixedSize(Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT);
 
