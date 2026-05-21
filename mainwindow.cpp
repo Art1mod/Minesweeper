@@ -135,6 +135,56 @@ void MainWindow::returnToMenu() {
 void MainWindow::handleLeftClick(int r, int c) {
     if (!board || board->isGameOver() || board->isGameWon()) return;
 
+    const Cell& clickedCell = board->getCell(r, c);
+
+    //  CHORDING (Clicking a revealed number) ---
+    if (clickedCell.isRevealed) {
+        if (clickedCell.neighborMines == 0) return; // Ignore blank spaces
+
+        // 1. Count neighboring flags
+        int flagCount = 0;
+        for (int dr = -1; dr <= 1; ++dr) {
+            for (int dc = -1; dc <= 1; ++dc) {
+                int nr = r + dr;
+                int nc = c + dc;
+                if (nr >= 0 && nr < board->getRows() && nc >= 0 && nc < board->getCols()) {
+                    if (board->getCell(nr, nc).isFlagged) {
+                        flagCount++;
+                    }
+                }
+            }
+        }
+
+        //  If flags match the number, reveal all non-flagged neighbors
+        if (flagCount == clickedCell.neighborMines) {
+            for (int dr = -1; dr <= 1; ++dr) {
+                for (int dc = -1; dc <= 1; ++dc) {
+                    int nr = r + dr;
+                    int nc = c + dc;
+                    if (nr >= 0 && nr < board->getRows() && nc >= 0 && nc < board->getCols()) {
+                        const Cell& neighbor = board->getCell(nr, nc);
+                        if (!neighbor.isRevealed && !neighbor.isFlagged) {
+                            board->revealCell(nr, nc); // This will handle cascades automatically
+                        }
+                    }
+                }
+            }
+            updateUI();
+
+            // Check game states after mass-reveal
+            if (board->isGameOver()) {
+                revealAllMines();
+                QMessageBox::critical(this, "Game Over", "Boom! You chorded into a misplaced mine.");
+                returnToMenu();
+            } else if (board->isGameWon()) {
+                QMessageBox::information(this, "Congratulations", "You cleared the field!");
+                returnToMenu();
+            }
+        }
+        return;
+    }
+
+
     if (firstClick) {
         board->initializeBoard(r, c);
         firstClick = false;
@@ -168,7 +218,6 @@ void MainWindow::updateUI() {
             MinesweeperButton *btn = buttons[r][c];
 
             if (cell.isRevealed) {
-                btn->setEnabled(false);
                 if (cell.isMine) {
                     btn->setText("💣");
                     btn->setStyleSheet("background-color: #fed7d7; color: #c53030;");
