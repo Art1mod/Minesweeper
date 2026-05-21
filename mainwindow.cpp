@@ -7,9 +7,66 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), board(nullptr), firstClick(true) {
     ui->setupUi(this);
 
-    // CRITICAL: Force the window to be one absolute, unchangeable size!
-    // 750 pixels wide, 700 pixels tall works beautifully for all formats.
     this->setFixedSize(750, 700);
+    this->setStyleSheet(R"(
+    /* Soft Muted Background Layer */
+    QMainWindow {
+        background-color: #f4f5f7; /* Very light slate-cream */
+    }
+
+    QStackedWidget, QScrollArea {
+        background-color: #f4f5f7;
+        border: none;
+    }
+
+    /* The core container background - forms soft white grid dividing lines */
+    QWidget#scrollContainer {
+        background-color: #ffffff;
+    }
+
+    /* Soft Minimalist Menu Titles */
+    QLabel {
+        font-family: 'Segoe UI', -apple-system, sans-serif;
+        color: #4a5568; /* Elegant Charcoal Blue */
+        font-weight: 500;
+        letter-spacing: 1px;
+    }
+
+    /* Soft Menu & Action Buttons */
+    QPushButton {
+        background-color: #ffffff;
+        color: #4a5568;
+        font-family: 'Segoe UI', -apple-system, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        border: 1px solid #e2e8f0; /* Soft gray border */
+        border-radius: 8px;        /* Smoothly rounded edges */
+    }
+    QPushButton:hover {
+        background-color: #edf2f7; /* Soft gray hover highlight */
+        color: #2d3748;
+    }
+    QPushButton:pressed {
+        background-color: #e2e8f0;
+    }
+
+    /* Game Tiles: Unrevealed Pastel Slate Blocks */
+    MinesweeperButton {
+        background-color: #cbd5e0; /* Balanced soft gray-blue */
+        border: none;              /* Perfectly flat monolith style */
+        border-radius: 0px;        /* Uniform tile blocks */
+        font-family: 'Segoe UI', -apple-system, sans-serif;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    MinesweeperButton:hover {
+        background-color: #b8c2cc; /* Soft indicator depth when hovering */
+    }
+    MinesweeperButton:disabled {
+        /* Revealed Flat Muted States */
+        background-color: #edf2f7; /* Very gentle light gray recess */
+    }
+)");
 
     // Initialize master stacked layout container
     stackedWidget = new QStackedWidget(this);
@@ -38,8 +95,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     // The container widget inside the scroll area that physically holds the grid
     scrollContainer = new QWidget(scrollArea);
+    scrollContainer->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     gridLayout = new QGridLayout(scrollContainer);
-    gridLayout->setSpacing(2);
+    gridLayout->setSpacing(1);
+    gridLayout->setContentsMargins(0, 0, 0, 0);
     scrollArea->setWidget(scrollContainer);
 
     stackedWidget->addWidget(gameWidget); // Index 1
@@ -165,23 +224,32 @@ void MainWindow::updateUI() {
                 btn->setEnabled(false);
                 if (cell.isMine) {
                     btn->setText("💣");
-                    btn->setStyleSheet("background-color: red;");
+                    // Muted Crimson for mine hits
+                    btn->setStyleSheet("background-color: #fed7d7; color: #c53030;");
                 } else if (cell.neighborMines > 0) {
                     btn->setText(QString::number(cell.neighborMines));
-                    if(cell.neighborMines == 1) btn->setStyleSheet("color: blue; font-weight: bold; background-color: #d3d3d3;");
-                    else if(cell.neighborMines == 2) btn->setStyleSheet("color: green; font-weight: bold; background-color: #d3d3d3;");
-                    else btn->setStyleSheet("color: red; font-weight: bold; background-color: #d3d3d3;");
+
+                    // Elegant, soft high-contrast colors against light background
+                    if (cell.neighborMines == 1)
+                        btn->setStyleSheet("color: #3182ce; background-color: #e2e8f0; font-weight: bold;"); // Clean Soft Blue
+                    else if (cell.neighborMines == 2)
+                        btn->setStyleSheet("color: #38a169; background-color: #e2e8f0; font-weight: bold;"); // Forest Mint Green
+                    else if (cell.neighborMines == 3)
+                        btn->setStyleSheet("color: #e53e3e; background-color: #e2e8f0; font-weight: bold;"); // Soft Rose Red
+                    else
+                        btn->setStyleSheet("color: #dd6b20; background-color: #e2e8f0; font-weight: bold;"); // Muted Terracotta Orange
                 } else {
                     btn->setText("");
-                    btn->setStyleSheet("background-color: #d3d3d3;");
+                    btn->setStyleSheet("background-color: #e2e8f0;");;
                 }
             } else {
                 if (cell.isFlagged) {
                     btn->setText("🚩");
-                    btn->setStyleSheet("color: red;");
+                    // Flag contrasts softly against unrevealed slate tiles
+                    btn->setStyleSheet("color: #e53e3e; font-size: 16px; background-color: #cbd5e0;");
                 } else {
                     btn->setText("");
-                    btn->setStyleSheet("");
+                    btn->setStyleSheet(""); // Pulls cleanly from the new soft global style sheet
                 }
             }
         }

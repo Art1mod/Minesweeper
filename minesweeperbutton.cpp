@@ -2,7 +2,7 @@
 
 MinesweeperButton::MinesweeperButton(int r, int c, QWidget *parent)
     : QPushButton(parent), row(r), col(c) {
-    setFixedSize(35, 35); // Set a square size for grid cells
+    setFixedSize(35, 35);
 }
 
 void MinesweeperButton::mousePressEvent(QMouseEvent *e) {
