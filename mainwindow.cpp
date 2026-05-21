@@ -141,7 +141,7 @@ void MainWindow::handleLeftClick(int r, int c) {
     if (clickedCell.isRevealed) {
         if (clickedCell.neighborMines == 0) return; // Ignore blank spaces
 
-        // 1. Count neighboring flags
+        //Count neighboring flags
         int flagCount = 0;
         for (int dr = -1; dr <= 1; ++dr) {
             for (int dc = -1; dc <= 1; ++dc) {

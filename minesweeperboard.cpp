@@ -24,8 +24,15 @@ void MinesweeperBoard::plantMines(int startRow, int startCol) {
         int r = std::rand() % rows;
         int c = std::rand() % cols;
 
-        // Don't place a mine on an existing mine, or on the user's first clicked cell
-        if (!grid[r][c].isMine && (r != startRow || c != startCol)) {
+        // Calculate horizontal and vertical distance from the initial click
+        int rowDist = std::abs(r - startRow);
+        int colDist = std::abs(c - startCol);
+
+        // A tile is inside the 3x3 safe zone if it is 0 or 1 tile away from the click
+        bool inSafeZone = (rowDist <= 1 && colDist <= 1);
+
+        // Only place a mine if it's an empty cell AND outside the entire 3x3 safe zone
+        if (!grid[r][c].isMine && !inSafeZone) {
             grid[r][c].isMine = true;
             planted++;
         }
